@@ -1,9 +1,11 @@
 use std::io::{Stdout, Write};
-use crate::frame::Frame;
-use crossterm::QueueableCommand;
-use crossterm::style::{SetBackgroundColor, Color};
-use crossterm::terminal::{Clear, ClearType};
+
 use crossterm::cursor::MoveTo;
+use crossterm::QueueableCommand;
+use crossterm::style::{Color, SetBackgroundColor};
+use crossterm::terminal::{Clear, ClearType};
+
+use crate::frame::Frame;
 
 pub fn render(stdout: &mut Stdout, last_frame: &Frame, curr_frame: &Frame, force: bool) {
     if force {

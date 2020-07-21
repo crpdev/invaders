@@ -1,19 +1,23 @@
-use std::error::Error;
-// use rusty_audio::Audio;
 use std::{io, thread};
-use crossterm::{terminal, ExecutableCommand, event};
-use crossterm::terminal::{EnterAlternateScreen, LeaveAlternateScreen};
-use crossterm::cursor::{Hide, Show};
-use std::time::{Duration, Instant};
-use crossterm::event::{KeyCode, Event};
+use std::error::Error;
 use std::sync::mpsc;
+use std::time::{Duration, Instant};
+
+use crossterm::{event, ExecutableCommand, terminal};
+use crossterm::cursor::{Hide, Show};
+use crossterm::event::{Event, KeyCode};
+use crossterm::terminal::{EnterAlternateScreen, LeaveAlternateScreen};
+
 use invaders::{frame, render};
-use invaders::player::Player;
 use invaders::frame::Drawable;
+use invaders::invaders::Invaders;
+use invaders::player::Player;
+
+// use rusty_audio::Audio;
 
 fn main() -> Result<(), Box<dyn Error>> {
-
     // Setup Audio for the game
+
     /*
     let mut audio = Audio::new();
     audio.add("explode", "explode.wav");
@@ -26,7 +30,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Play the Game Start Audio
     // Audio is played on a different thread
     audio.play("start");
-    */
+
+     */
 
     // Setting up the Terminal to play the game
     // The game window is the OS Terminal, so we get from stdout
@@ -46,7 +51,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         let mut stdout = io::stdout();
         render::render(&mut stdout, &last_frame, &last_frame, true);
         loop {
-            let curr_frame = match render_rx.recv(){
+            let curr_frame = match render_rx.recv() {
                 Ok(x) => x,
                 Err(_) => break,
             };
@@ -58,11 +63,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Create a new player on the alternate terminal
     let mut player = Player::new();
     let mut instant = Instant::now();
-
+    let mut invaders = Invaders::new();
     // Gameloop
 
     'gameloop: loop {
-
         let delta = instant.elapsed();
         instant = Instant::now();
         let mut curr_fame = frame::new_frame();
@@ -76,27 +80,45 @@ fn main() -> Result<(), Box<dyn Error>> {
                         if player.shoot() {
                             // audio.play("pew");
                         }
-                    },
+                    }
                     KeyCode::Esc | KeyCode::Char('q') => {
                         // audio.play("lose");
-                        break 'gameloop
-                    },
+                        break 'gameloop;
+                    }
                     _ => {}
                 }
             }
-            
         }
 
-    //     Updates
+        //     Updates
 
         player.update(delta);
+        if invaders.update(delta) {
+            // audio.play("move");
+        }
+        if player.detect_hits(&mut invaders) {
+            // audio.play("explode");
+        }
 
-    //     Draw and render
-        player.draw(&mut curr_fame);
+        //     Draw and render
+        //     player.draw(&mut curr_fame);
+        //     invaders.draw(&mut curr_fame);
+        let drawables: Vec<&dyn Drawable> = vec![&player, &invaders];
+        for drawable in drawables {
+            drawable.draw(&mut curr_fame);
+        }
         let _ = render_tx.send(curr_fame);
         thread::sleep(Duration::from_millis(1));
+        //     Win or Lose
+        if invaders.all_killed() {
+            // audio.play("win");
+            break 'gameloop;
+        }
+        if invaders.reached_bottom() {
+            // audio.play("lose");
+            break 'gameloop;
+        }
     }
-
 
     // Cleanup Section
     // Wait for the audio playback thread to complete

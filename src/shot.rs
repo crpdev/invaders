@@ -1,5 +1,7 @@
-use rusty_time::timer::Timer;
 use std::time::Duration;
+
+use rusty_time::timer::Timer;
+
 use crate::frame::{Drawable, Frame};
 
 pub struct Shot {
@@ -35,7 +37,7 @@ impl Shot {
     }
 
     pub fn dead(&self) -> bool {
-        ((self.exploding && self.timer.ready) || self.y == 0)
+        (self.exploding && self.timer.ready) || self.y == 0
     }
 }
 
