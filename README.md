@@ -1,5 +1,6 @@
 # **Invaders**: Terminal Based Game Built on _Rust_
 
+---
 - Features of Rust extensively used in this project
     - Channel
     - Thread
@@ -11,10 +12,14 @@
     - Standard Libraries
     - External Modules
 
+---
+
 - **Dependencies**
     - crossterm: Terminal utility to manage enable/disable alternate screen, ready/map KeyCode event inputs & Show/ Hide cursor
     - rusty_audio: Enable audio playback and manage audio files
     - rusty_time: Timer utility 
+
+---
     
 - **Modules**
     - main
@@ -24,7 +29,7 @@
     - player
     - shot
     - invaders
-    
++++    
 - **Module Usage**
     - _main_
         - Orchestration manager of the "Invaders" module
@@ -65,7 +70,7 @@
             - _all_killed_: Check if the player has killed all the invaders [based on array count]
             - _reached_bottom_: Check if the army has reached the bottom of the frame
             - _kill_invader_at_: If the bullet has hit an invader, remove from the frame
-            
+
 - **Playing Invaders**
     - Clone the project and run the command "_cargo run_" from the terminal windows.
     - The module will download the dependencies, build the project and make an executable based on your OS
@@ -80,3 +85,6 @@ Feel free to checkout the code and play-around. I will be adding features as I g
     - Welcome/ Exit screens
     - Multi-player
                       
+🦀 [Rajapandian C](crp@protonmail.com)
+🤝 [LinkedIn](https://www.linkedin.com/in/rajapandianc/)
+👨🏻‍💻 [Twitter](https://twitter.com/crpcodes)
